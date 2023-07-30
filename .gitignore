@@ -68,6 +68,8 @@ ScaffoldingReadMe.txt
 # StyleCop
 StyleCopReport.xml
 
+TagData.csv
+
 # Files built by Visual Studio
 *_i.c
 *_p.c
