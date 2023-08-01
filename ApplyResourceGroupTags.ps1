@@ -2,10 +2,11 @@
 
 try {
     # Login to Azure Powershell CLI
-    Connect-AzAccount -TenantId "{{TENANT_ID}}"
+    Connect-AzAccount -TenantId "{{TENANT_ID}}" -ErrorAction Stop
 } catch {
     # Log auth exceptions
     Write-Host $_ -ForegroundColor Black -BackgroundColor white
+    break
 }
 
 # Parse CSV for String Content and strip header valuers
@@ -15,8 +16,6 @@ $csvTagData = Import-Csv -Path .\TagData.csv
 foreach ($row in $csvTagData){
     # Set Subscription Context
     $subscriptionContext = Set-AzContext -Subscription $row.SubscriptionName
-    
-    # Create Tags dictionary
     $tags = @{"Owner"=$row.Owner; "Department"=$row.Department; "Environment"=$row.Environment; "CostCenter"=$row.CostCenter}
     try {
         # Query for ResourceGroup ResourceId
@@ -27,6 +26,7 @@ foreach ($row in $csvTagData){
 
         # Update Tags for specific ResourceGroup
         $updatedTag = Update-AzTag -ResourceId $rg.ResourceId -Tag $tags -operation Merge
+
     } catch {
         # Log exceptions
         Write-Host $_ -ForegroundColor Black -BackgroundColor white
